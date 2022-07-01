@@ -5,7 +5,7 @@ class Entity:
 
     """A generic interface implemented by all items in the game."""
 
-    def __init__(self, name, other_names, description, location, size=1, strength=0, capacity=0, hoistable=True, destroyable=False, open=False, openable=False):
+    def __init__(self, name, other_names, description, location, size=1, strength=0, capacity=0, hoistable=True, destroyable=False, open=False, openable=False, lightable=False, on=False):
         
         """Args:
             name (str): The primary title of the game entity
@@ -18,7 +18,9 @@ class Entity:
             hoistable (bool): Can the entity be moved/picked up? (default is False)
             destroyable (bool): Can the entity be destroyed? (default is False)
             open (bool): Is the entity open? (default is False)
-            openable (bool): Can the entity be opened? Is it unlocked? (default is False)"""
+            openable (bool): Can the entity be opened/closed? Is it unlocked? (default is False)
+            lightable (bool): Can the entity be used as a light? (default is False
+            on (bool): Is the entity on?"""
 
         self.names = (name,) + other_names
         self.description = description
@@ -30,6 +32,8 @@ class Entity:
         self.capacity = capacity
         self.open = open
         self.openable = openable
+        self.lightable = lightable
+        self.on = on
 
         if Game.DEBUG:
             Game.log("Entity initialized. Name: {name}.\tLocation: {location}".format(name=name, location=location))
@@ -45,6 +49,16 @@ class Entity:
         return self.names[0]
 
 
+    def __repr__(self):
+
+        """Overloads the builtin representation method.
+        
+        Returns:
+            str: The identifier of the entity for internal use"""
+
+        return " - ".join(self.names)
+
+
     def __eq__(self, other):
 
         """Overloads the builtin comparison method.
@@ -53,9 +67,39 @@ class Entity:
             other (Entity): Another entity
         
         Returns:
-            bool: Are the primary names equal?"""
+            bool: Are the representations equal?"""
 
-        return self.__str__() == other.__str__()
+        return self.__repr__() == other.__repr__()
+
+
+    def contents(self):
+
+        """Identifies entities which consider this entity their container.
+        
+        Returns:
+            tuple, Entity: All entities which this entity contains"""
+
+        ans = ()
+
+        for item in Game.entities:
+            if item.location == self:
+                ans = ans + (item,)
+
+        return ans
+
+
+    def contents_size(self):
+
+        """Sums the size attributes of each entity which considers this entity its container.
+        
+        Returns:
+            int: The size of this entity's contents"""
+
+        ans = 0
+        for item in self.contents():
+            ans += item.size
+
+        return ans
 
 
     def per_turn(self):
@@ -63,7 +107,7 @@ class Entity:
         """Should be called every turn on every entity. Logs state of object and may be overloaded for custom behavior."""
 
         if Game.DEBUG:
-            Game.log("Game state update. Location of {name} is {location}".format(name=self.names[0], location=self.location))
+            Game.log("Game state update. Location of {name} is {location}".format(name=str(self), location=self.location))
 
 
     def examine(self):
@@ -84,12 +128,12 @@ class Entity:
             str: Success/failure message"""
 
         if not self.hoistable:
-            return "You cannot pick up the {name}.".format(name=self.names[0])
-        elif Game.inventory_size() + self.size <= Game.player.capacity:
+            return "You cannot pick up the {name}.".format(name=str(self))
+        elif Game.player.contents_size() + self.size <= Game.player.capacity:
             self.location = Game.player
             return "Taken."
         else:
-            return "Your load is too heavy to pick up the {name}.".format(name=self.names[0])
+            return "Your load is too heavy to pick up the {name}.".format(name=str(self))
 
 
     def drop(self):
@@ -111,9 +155,9 @@ class Entity:
             str: Success/failure message"""
 
         if self.open:
-            return "The {name} is already open.".format(name=self.names[0])
+            return "The {name} is already open.".format(name=str(self))
         elif not self.openable:
-            return "You cannot open the {name}".format(name=self.names[0])
+            return "You cannot open the {name}".format(name=str(self))
         else:
             self.open = True
             return "Opened."
@@ -127,9 +171,60 @@ class Entity:
             str: Success/failure message"""
 
         if not self.openable:
-            return "The {name} cannot be closed.".format(name=self.names[0])
+            return "The {name} cannot be closed.".format(name=str(self))
         elif not open:
-            return "The {name} is already closed.".format(name=self.names[0])
+            return "The {name} is already closed.".format(name=str(self))
         else:
             self.open = False
             return "Closed."
+
+
+    def turn_on(self):
+
+        """Turns on the entity if possible.
+        
+        Returns:
+            str: Successs/failure message"""
+
+        if self.on:
+            return "The {name} is already open.".format(name=str(self))
+        elif not self.lightable:
+            return "The {name} cannot be turned on.".format(name=str(self))
+        else:
+            self.on = True
+            return "It is now on."
+
+
+    def turn_off(self):
+
+        """Turns off the entity if possible.
+        
+        Returns:
+            str: Successs/failure message"""
+
+        if not self.lightable:
+            return "The {name} is not a thing you can turn off.".format(name=str(self))
+
+
+    def hit(self, indirect_object):
+
+        """Handles this entity being hit with another entity.
+        
+        Args:
+            indirect_object (Entity): The entity being used to hit this one
+            
+        Returns:
+            str: Success/failure message"""
+
+        if (not self.destroyable) or (indirect_object.strength <= 0):
+            return "You are unable to destroy the {name} with the {other_name}.".format(name=str(self), other_name=str(indirect_object))
+        else:
+            self.strength -= indirect_object.strength
+            if self.strength < 0:
+                self.location = None
+                return "With a swift blow from the {other_name}, the {name} is destroyed.".format(other_name=str(indirect_object), name=str(self))
+            else:
+                return "You damage the {other_name}.".format(other_name=str(indirect_object))
+
+
+    
