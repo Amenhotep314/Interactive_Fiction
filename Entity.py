@@ -30,7 +30,6 @@ class Entity:
         self.capacity = capacity
         self.open = open
         self.openable = openable
-        print()
 
         if Game.DEBUG:
             Game.log("Entity initialized. Name: {name}.\tLocation: {location}".format(name=name, location=location))
@@ -49,9 +48,88 @@ class Entity:
     def __eq__(self, other):
 
         """Overloads the builtin comparison method.
+
+        Args:
+            other (Entity): Another entity
         
         Returns:
             bool: Are the primary names equal?"""
 
         return self.__str__() == other.__str__()
 
+
+    def per_turn(self):
+
+        """Should be called every turn on every entity. Logs state of object and may be overloaded for custom behavior."""
+
+        if Game.DEBUG:
+            Game.log("Game state update. Location of {name} is {location}".format(name=self.names[0], location=self.location))
+
+
+    def examine(self):
+
+        """Gives further details about the entity when the player requests them.
+        
+        Returns:
+            str: Description of entity"""
+
+        return self.description
+
+
+    def take(self):
+
+        """Puts the entity in the player's inventory if possible.
+        
+        Returns:
+            str: Success/failure message"""
+
+        if not self.hoistable:
+            return "You cannot pick up the {name}.".format(name=self.names[0])
+        elif Game.inventory_size() + self.size <= Game.player.capacity:
+            self.location = Game.player
+            return "Taken."
+        else:
+            return "Your load is too heavy to pick up the {name}.".format(name=self.names[0])
+
+
+    def drop(self):
+
+        """Puts the entity in the player's current location.
+        
+        Returns:
+            str: Success message"""
+
+        self.location = Game.player.location
+        return "Dropped."
+
+
+    def open(self):
+
+        """Opens the entity if possible.
+        
+        Returns:
+            str: Success/failure message"""
+
+        if self.open:
+            return "The {name} is already open.".format(name=self.names[0])
+        elif not self.openable:
+            return "You cannot open the {name}".format(name=self.names[0])
+        else:
+            self.open = True
+            return "Opened."
+
+
+    def close(self):
+
+        """Closes the entity if possible.
+        
+        Returns:
+            str: Success/failure message"""
+
+        if not self.openable:
+            return "The {name} cannot be closed.".format(name=self.names[0])
+        elif not open:
+            return "The {name} is already closed.".format(name=self.names[0])
+        else:
+            self.open = False
+            return "Closed."
