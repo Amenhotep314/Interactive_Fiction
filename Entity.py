@@ -302,11 +302,11 @@ class Entity:
         Args:
             direction (str): n, e, s, w, ne, se, sw, nw, u, or d
         Returns:
-            str or bool: Failure message or success"""
+            str: Failure message or empty string for success"""
 
         ans = self.location.move(self, direction)
         if type(ans) == str:
             return ans
         self.location = ans
 
-        return True
+        return ""
