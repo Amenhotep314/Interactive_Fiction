@@ -1,1 +1,1 @@
-#Hello. This is a test of git.
+#It was just a mispelling, Nathan.
