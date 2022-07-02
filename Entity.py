@@ -3,7 +3,7 @@ import Game
 
 class Entity:
 
-    """A generic interface implemented by all items in the game."""
+    """A superclass implemented by all items in the game."""
 
     def __init__(self,
         name, other_names, description, location,
@@ -61,7 +61,7 @@ class Entity:
         Returns:
             str: The identifier of the entity for internal use"""
 
-        return " - ".join(self.names)
+        return " - ".join(self.names).lower()
 
 
     def __eq__(self, other):
@@ -79,7 +79,10 @@ class Entity:
 
         """Converts strings to object references when possible. Should be called on all entities at session start."""
 
-        pass
+        if type(self.location) == str:
+            self.location = Game.object_from_str(self.location)
+        if self.unlocks and type(self.unlocks[0]) == str:
+            self.unlocks = (Game.object_from_str(entity) for entity in self.unlocks)
 
 
     def contents(self):
