@@ -41,6 +41,9 @@ class Room:
         self.directions["d"] = d if d[0] else None
         self.light = light
 
+        if Game.DEBUG:
+            Game.log("Room initialized. Name: {name}.".format(name=self.name))
+
 
     def __str__(self):
 

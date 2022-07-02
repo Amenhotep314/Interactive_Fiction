@@ -44,7 +44,7 @@ class Entity:
         self.unlocks = unlocks
 
         if Game.DEBUG:
-            Game.log("Entity initialized. Name: {name}.\tLocation: {location}".format(name=name, location=location))
+            Game.log("Entity initialized. Name: {name}.\tLocation: {location}".format(name=str(self), location=str(self.location)))
     
     
     def __str__(self):

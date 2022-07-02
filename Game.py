@@ -11,13 +11,33 @@ def main():
     # Import all entities and rooms
     # Snap all entities and rooms
 
+    # Start tests
     from Entity import Entity
-    test = Entity(
-        "Brass Lantern",
-        ("lantern", "lamp", "light"),
-        "The brass lantern is highly hoistable.",
-        "Attic"
+    from Room import Room
+
+    west_of_house = Room(
+        "West of House",
+        "You are standing in an open field west of a white house, with a boarded front door.",
     )
+
+    mailbox = Entity(
+        "Small Mailbox",
+        ("mailbox", "box",),
+        "",
+        west_of_house,
+        capacity=1,
+        hoistable=False,
+        openable=True
+    )
+
+    leaflet = Entity(
+        "Leaflet",
+        (),
+        "The leaflet says, \"WELCOME TO ZORK!\n\nZORK is a game of adventure, danger, and low cunning. In it you will explore some of the most amazing territory ever seen by mortals. No computer should be without one!\"",
+        mailbox,
+    )
+
+    # End tests
 
     while True:
         turn_handler(1)
