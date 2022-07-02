@@ -21,7 +21,7 @@ class Entity:
             size (int): The amount of space taken up by the entity (default is 1)
             strength (int): Resistance of entity to destruction or entity's destructive potential (default is 0)
             capacity (int): Units of size which can be contained in the entity (default is 0)
-            hoistable (bool): Can the entity be moved/picked up? (default is False)
+            hoistable (bool): Can the entity be moved/picked up? (default is True)
             destroyable (bool): Can the entity be destroyed? (default is False)
             open (bool): Is the entity open? (default is False)
             openable (bool): Can the entity be opened/closed? Is it unlocked? (default is False)
