@@ -168,9 +168,11 @@ class Entity:
             return "The {other_name} is not the sort of thing you can put the {name} into.".format(other_name=str(other), name=str(self))
         elif not other.open:
             return "The {other_name} is closed.".format(other_name=str(other))
-        else:
+        elif other.contents_size() + self.size <= other.size:
             self.location = other
             return "The {name} is now in the {other_name}.".format(name=str(self), other_name=str(other))
+        else:
+            return "There is not enough room in the {other_name} for the {name}".format(other_name=str(other), name=str(self))
 
 
     def open(self):
