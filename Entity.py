@@ -1,4 +1,5 @@
 import Game
+from Room import Room
 
 
 class Entity:
@@ -68,7 +69,7 @@ class Entity:
 
         """Overloads the builtin comparison method.
         Args:
-            other (Entity): Another entity  
+            other: Another object 
         Returns:
             bool: Are the representations equal?"""
 
@@ -293,3 +294,19 @@ class Entity:
             str: The entity's response or a failure message"""
 
         return "The {name} is unresponsive.".format(name=str(self))
+
+
+    def move(self, direction):
+
+        """Moves this entity through an exit if possible.
+        Args:
+            direction (str): n, e, s, w, ne, se, sw, nw, u, or d
+        Returns:
+            str or bool: Failure message or success"""
+
+        ans = self.location.move(self, direction)
+        if type(ans) == str:
+            return ans
+        self.location = ans
+
+        return True
