@@ -10,6 +10,18 @@ def parse(userInput):
         Game.log("Parser received phrase: " + userInput)
 
 
+def cleanInput(userInput):
+    
+    puncBlacklist = [".", ",", "<", ">", "?", "/", "\\", ";", ":", "'", "[", "]", "{", "}", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "=", "`", "~"]
+
+    for i in range(len(puncBlacklist)):
+
+        userInput = userInput.replace(puncBlacklist[i], "")
+
+    userInput = userInput.lower()
+
+    return userInput
+
 
 def move (direction):
     Game.game.player.move(direction)
