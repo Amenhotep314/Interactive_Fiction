@@ -9,4 +9,7 @@ def parse(userInput):
     if Game.DEBUG:
         Game.log("Parser received phrase: " + userInput)
 
-    
+
+
+def move (direction):
+    Game.game.player.move(direction)
