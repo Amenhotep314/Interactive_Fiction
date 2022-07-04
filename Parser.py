@@ -12,6 +12,11 @@ def parse(userInput):
         Game.log("Parser received phrase: " + userInput + ", and cleaned it to: " + cleanText)
 
 def requiresObject(verb, objectType):
+
+    """Determines if a certain verb needs a direct or indirect object
+    Args:
+        verb (str): the verb in question
+        objectType (str): either 'direct' or 'indirect'"""
     
     requisiteObjectList = {
         "n": (False, False),
