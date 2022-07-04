@@ -92,7 +92,6 @@ def removeArticles(userInput):
     
     return userInput
 
-
 def cleanInput(userInput):
     
     puncBlacklist = (".", ",", "<", ">", "?", "/", "\\", ";", ":", "'", "[", "]", "{", "}", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "=", "`", "~")
