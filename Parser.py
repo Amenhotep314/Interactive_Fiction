@@ -11,6 +11,9 @@ def parse(userInput):
     if Game.DEBUG:
         Game.log("Parser received phrase: " + userInput + ", and cleaned it to: " + cleanText)
 
+    
+def findVerb(text):
+
     verbs = (
         ("north", "n"),
         ("south", "s"),
@@ -23,10 +26,11 @@ def parse(userInput):
         ("up", "u"),
         ("down", "d"),
         ("look", "location", "l"),
-        ("inventory", "i"),
-        ("take", "get", "pick up", "grab", "steal"),
+        ("inventory"),                              #This doesn't include i because it would cause problems with the user typing I to mean themselves. There is a special case down below for if the user types only a single "i".
+        ("take", "get", "pick up", "grab", "steal", "hoist",),
         ("throw", "chuck", "hurl", "pitch"),
         ("open"),
+        ("close"),
         ("read"),
         ("drop"),
         ("put"),
@@ -35,8 +39,48 @@ def parse(userInput):
         ("hit", "kill", "attack", "strike", "smite", "slash", "destroy", "chop", "slice"),
         ("examine", "search", "inspect"),
         ("eat", "consume", "devour", "gobble", "munch", "gnaw on"),
-        ("drink", "guzzle", "sip", "swallow", "swig")
+        ("drink", "guzzle", "sip", "swallow", "swig", "slurp")
     )
+
+    verb = ""
+    verbCount = 0
+    wordList = text.split(" ")
+
+    if text == "i":
+        verb = "inventory"
+    
+    else:
+
+        for i in range(len(verbs)):
+
+            for j in range(len(verbs[i])):
+
+                for a in range(len(wordList)):
+
+                    length = len(wordList)
+
+                    if wordList[a] == verbs[i][j]:
+
+                        verb = verbs[i][j]
+                        verbCount += 1
+                    
+                    if a+1 != len(wordList):
+
+                        if wordList[a] + " " + wordList[a+1] == verbs[i][j]:
+
+                            verb = wordList[a] + " " + wordList[a+1]
+                            verbCount += 1
+    if verbCount == 1:
+
+        for i in range(len(verbs)):
+
+            for j in range(len(verbs[i])):
+
+                if verb == verbs[i][j]:
+
+                    verb = verbs[i][0]
+    
+    return verbCount, verb
 
 def removeArticles(userInput):
 
