@@ -61,6 +61,5 @@ def cleanInput(userInput):
 
     return userInput
 
-
-def move (direction):
+def move(direction):
     Game.game.player.move(direction)
