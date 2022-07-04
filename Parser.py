@@ -36,6 +36,7 @@ def parse(userInput):
         ("drink", "guzzle", "sip", "swallow", "swig")
     )
 
+def removeArticles(userInput):
 
     articleBlacklist = ("a", "an", "the", "this", "that")
 
