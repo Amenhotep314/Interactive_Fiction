@@ -70,6 +70,7 @@ def findVerb(text):
 
                             verb = wordList[a] + " " + wordList[a+1]
                             verbCount += 1
+    
     if verbCount == 1:
 
         for i in range(len(verbs)):
@@ -79,8 +80,19 @@ def findVerb(text):
                 if verb == verbs[i][j]:
 
                     verb = verbs[i][0]
+        
+        return verb
+
+    elif verbCount == 0:
+
+        print("There's no verb in that sentence!")
+        return None
     
-    return verbCount, verb
+    elif verbCount > 1:
+
+        print("I don't understand that sentence!")
+        return None
+        
 
 def removeArticles(userInput):
 
