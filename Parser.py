@@ -2,9 +2,9 @@ import Game
 
 def parse(userInput):
 
-    """This is the main function for the parser.
-    Pass the input from the user in as a string, and it will call the requisite method in whatever entity.
-    It does not return anything, but it does write to the log and print stuff."""
+    """Parses raw user input and calls proper method in entity or room.
+    Args:
+        userInput (str): the raw user input"""
 
     cleanText = cleanInput(userInput)
 
@@ -13,6 +13,12 @@ def parse(userInput):
 
     
 def findVerb(text):
+
+    """Finds the verb or verbs in a string of text.
+    Args:
+        text (str): the text in which to find the verb
+    Returns:
+        str: verb if found, empty string if not"""
 
     verbs = (
         ("north", "n"),
@@ -96,6 +102,12 @@ def findVerb(text):
 
 def removeArticles(userInput):
 
+    """Removes common articles from a string
+    Args:
+        userInput (str): string from which to remove the articles
+    Returns:
+        str: the string without the articles"""
+
     articleBlacklist = ("a", "an", "the", "this", "that")
 
     for i in range(len(articleBlacklist)):
@@ -105,6 +117,12 @@ def removeArticles(userInput):
     return userInput
 
 def cleanInput(userInput):
+
+    """Removes puctuation and caps from string
+    Args:
+        userInput (str): the string to have its punctuation removed
+    Returns:
+        str: string without puctuation or caps"""
     
     puncBlacklist = (".", ",", "<", ">", "?", "/", "\\", ";", ":", "'", "[", "]", "{", "}", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "=", "`", "~")
 
