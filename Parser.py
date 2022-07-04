@@ -9,6 +9,8 @@ def parse(userInput):
     cleanText = cleanInput(userInput)
 
     if Game.DEBUG:
+        Game.log("Parser received phrase: " + userInput + ", and cleaned it to: " + cleanText)
+
     verbs = (
         ("north", "n"),
         ("south", "s"),
