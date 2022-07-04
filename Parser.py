@@ -11,6 +11,48 @@ def parse(userInput):
     if Game.DEBUG:
         Game.log("Parser received phrase: " + userInput + ", and cleaned it to: " + cleanText)
 
+def requiresObject(verb, objectType):
+    
+    requisiteObjectList = {
+        "n": (False, False),
+        "s": (False, False),
+        "e": (False, False),
+        "w": (False, False),
+        "nw": (False, False),
+        "ne": (False, False),
+        "sw": (False, False),
+        "se": (False, False),
+        "u": (False, False),
+        "d": (False, False),
+        "look": (False, False),
+        "inventory": (False, False),
+        "take": (True, False),
+        "throw": (True, False),
+        "open": (True, False),
+        "close": (True, False),
+        "read": (True, False),
+        "drop": (True, False),
+        "put": (True, True),
+        "turn on": (True, False),
+        "turn off": (True, False),
+        "hit": (True, True),
+        "examine": (True, False),
+        "eat": (True, False),
+        "drink": (True, False)
+    }
+
+    requires = False
+
+    if objectType == "direct":
+
+        requires = requisiteObjectList[verb][0]
+
+    elif objectType == "indirect":
+
+        requires = requisiteObjectList[verb][1]
+    
+    return requires
+
     
 def findVerb(text):
 
