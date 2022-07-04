@@ -7,7 +7,33 @@ def parse(userInput):
     It does not return anything, but it does write to the log."""
 
     if Game.DEBUG:
-def remove(userInput):
+    verbs = (
+        ("north", "n"),
+        ("south", "s"),
+        ("east", "e"),
+        ("west", "w"),
+        ("northwest", "nw"),
+        ("northeast", "ne"),
+        ("southwest", "sw"),
+        ("southeast", "se"),
+        ("up", "u"),
+        ("down", "d"),
+        ("look", "location", "l"),
+        ("inventory", "i"),
+        ("take", "get", "pick up", "grab", "steal"),
+        ("throw", "chuck", "hurl", "pitch"),
+        ("open"),
+        ("read"),
+        ("drop"),
+        ("put"),
+        ("turn on", "activate", "switch on"),
+        ("turn off", "deactivate", "swith off"),
+        ("hit", "kill", "attack", "strike", "smite", "slash", "destroy", "chop", "slice"),
+        ("examine", "search", "inspect"),
+        ("eat", "consume", "devour", "gobble", "munch", "gnaw on"),
+        ("drink", "guzzle", "sip", "swallow", "swig")
+    )
+
 
     articleBlacklist = ("a", "an", "the", "this", "that")
 
