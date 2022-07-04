@@ -86,12 +86,12 @@ def findVerb(text):
     elif verbCount == 0:
 
         print("There's no verb in that sentence!")
-        return None
+        return ""
     
     elif verbCount > 1:
 
         print("I don't understand that sentence!")
-        return None
+        return ""
         
 
 def removeArticles(userInput):
