@@ -7,7 +7,15 @@ def parse(userInput):
     It does not return anything, but it does write to the log."""
 
     if Game.DEBUG:
-        Game.log("Parser received phrase: " + userInput)
+def remove(userInput):
+
+    articleBlacklist = ("a", "an", "the", "this", "that")
+
+    for i in range(len(articleBlacklist)):
+
+        userInput = userInput.replace(articleBlacklist[i], "")
+    
+    return userInput
 
 
 def cleanInput(userInput):
