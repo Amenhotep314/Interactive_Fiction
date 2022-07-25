@@ -119,8 +119,31 @@ def findVerb(text):
 
                     if wordList[a] == verbs[i][j]:
 
-                        verb = verbs[i][j]
-                        verbCount += 1
+                        if (wordList[a] == "down" or wordList[a] == "up") and a != 0:
+
+                            if wordList[a-1] != "pick" and wordList[a-1] != "put":
+
+                                verb = verbs[i][j]
+                                verbCount += 1
+
+                        elif wordList[a] == "put":
+
+                            if a+1 != len(wordList):
+
+                                if wordList[a+1] != "down":
+
+                                    verb = verbs[i][j]
+                                    verbCount += 1
+                            
+                            else:
+
+                                verb = verbs[i][j]
+                                verbCount += 1
+                        
+                        else:
+
+                            verb = verbs[i][j]
+                            verbCount += 1
                     
                     if a+1 != len(wordList):
 
