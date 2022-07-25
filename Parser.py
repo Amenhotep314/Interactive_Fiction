@@ -1,4 +1,6 @@
 import Game
+import Entity
+import Room
 
 def parse(userInput):
 
