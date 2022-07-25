@@ -67,33 +67,37 @@ def findVerb(text):
     Returns:
         str: verb if found, empty string if not"""
 
-    verbs = (           #Note that down below, all synonyms are switched to the first verb in the tuple.
-        ("n", "north"), #This means that the first verb listed is the one that will be used.
-        ("s", "south"),
-        ("e", "east"),
-        ("w", "west"),
-        ("nw", "northwest"),
-        ("ne", "northeast"),
-        ("sw", "southwest"),
-        ("se", "southeast"),
-        ("u", "up"),
-        ("d", "down"),
-        ("look", "location", "l"),
-        ("inventory"),                              #This doesn't include i because it would cause problems with the user typing I to mean themselves. There is a special case down below for if the user types only a single "i".
-        ("take", "get", "pick up", "grab", "steal", "hoist",),
-        ("throw", "chuck", "hurl", "pitch"),
-        ("open"),
-        ("close"),
-        ("read"),
-        ("drop"),
-        ("put"),
-        ("turn on", "activate", "switch on"),
-        ("turn off", "deactivate", "swith off"),
-        ("hit", "kill", "attack", "strike", "smite", "slash", "destroy", "chop", "slice", "punch", "slap", "kick", "assault"),
-        ("examine", "search", "inspect"),
-        ("eat", "consume", "devour", "gobble", "munch", "gnaw on"),
-        ("drink", "guzzle", "sip", "swallow", "swig", "slurp")
-    )
+    verbs = [           #Note that down below, all synonyms are switched to the first verb in the tuple.
+        ["move", "go"], #This means that the first verb listed is the one that will be used.
+        ["n", "north"],
+        ["s", "south"],
+        ["e", "east"],
+        ["w", "west"],
+        ["nw", "northwest"],
+        ["ne", "northeast"],
+        ["sw", "southwest"],
+        ["se", "southeast"],
+        ["u", "up"],
+        ["d", "down"],
+        ["look", "location", "l"],
+        ["inventory"],                              #This doesn't include i because it would cause problems with the user typing I to mean themselves. There is a special case down below for if the user types only a single "i".
+        ["take", "get", "pick up", "grab", "steal", "hoist",],
+        ["throw", "chuck", "hurl", "pitch"],
+        ["open"],
+        ["close"],
+        ["read"],
+        ["drop", "put down"],
+        ["put"],
+        ["lock"],
+        ["unlock"],
+        ["say", "speak", "talk"],
+        ["turn on", "activate", "switch on"],
+        ["turn off", "deactivate", "swith off"],
+        ["hit", "kill", "attack", "strike", "smite", "slash", "destroy", "chop", "slice", "punch", "slap", "kick", "assault", "smack"],
+        ["examine", "search", "inspect"],
+        ["eat", "consume", "devour", "gobble", "munch", "gnaw on"],
+        ["drink", "guzzle", "sip", "swallow", "swig", "slurp"]
+    ]
 
     verb = ""
     verbCount = 0
