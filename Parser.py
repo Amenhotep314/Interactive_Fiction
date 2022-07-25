@@ -247,7 +247,8 @@ def removeArticles(userInput):
 
     for i in range(len(articleBlacklist)):
 
-        userInput = userInput.replace(articleBlacklist[i], "")
+        userInput = userInput.replace(articleBlacklist[i]+" ", "")
+        userInput = userInput.replace(" "+articleBlacklist[i], "")
     
     return userInput
 
