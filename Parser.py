@@ -81,7 +81,7 @@ def findVerb(text):
         ["d", "down"],
         ["look", "location", "l"],
         ["inventory"],                              #This doesn't include i because it would cause problems with the user typing I to mean themselves. There is a special case down below for if the user types only a single "i".
-        ["take", "get", "pick up", "grab", "steal", "hoist",],
+        ["take", "get", "pick up", "grab", "steal", "hoist"],
         ["throw", "chuck", "hurl", "pitch"],
         ["open"],
         ["close"],
@@ -93,7 +93,7 @@ def findVerb(text):
         ["say", "speak", "talk"],
         ["turn on", "activate", "switch on"],
         ["turn off", "deactivate", "swith off"],
-        ["hit", "kill", "attack", "strike", "smite", "slash", "destroy", "chop", "slice", "punch", "slap", "kick", "assault", "smack"],
+        ["hit", "kill", "attack", "strike", "smite", "slash", "destroy", "chop", "slice", "punch", "slap", "kick", "assault", "smack", "break"],
         ["examine", "search", "inspect"],
         ["eat", "consume", "devour", "gobble", "munch", "gnaw on"],
         ["drink", "guzzle", "sip", "swallow", "swig", "slurp"]
