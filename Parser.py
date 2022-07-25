@@ -105,6 +105,7 @@ def findVerb(text):
 
     if text == "i":
         verb = "inventory"
+        verbCount += 1
     
     else:
 
