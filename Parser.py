@@ -152,6 +152,61 @@ def findVerb(text):
                             verb = wordList[a] + " " + wordList[a+1]
                             verbCount += 1
     
+    directions = (
+            "n",
+            "s",
+            "e",
+            "w",
+            "north",
+            "south",
+            "east",
+            "west",
+            "u",
+            "d",
+            "up",
+            "down",
+            "nw",
+            "ne",
+            "sw",
+            "se",
+            "northwest",
+            "northeast",
+            "southwest",
+            "southeast"
+        )
+
+    for i in range(len(directions)):
+
+        if verb == directions[i] and verbCount == 2:
+
+            verbCount = 1
+
+    if verb == "move" or verb == "go":
+
+        response = input("Which way do you want to move?\n>>> ")
+        response = response.lower()
+        response = response.split()
+
+        direction = False
+        direction_index = 0
+
+        for i in range(len(directions)):
+
+            for j in range(len(response)):
+
+                if response[j] == directions[i]:
+
+                    direction = True
+                    direction_index = i
+        
+        if direction == True:
+
+            verb = directions[direction_index]
+        
+        else:
+            print("That's not a direction you can go!")
+            return ""
+            
     if verbCount == 1:
 
         for i in range(len(verbs)):
