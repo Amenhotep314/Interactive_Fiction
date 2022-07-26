@@ -2,25 +2,31 @@ import Game
 import Entity
 import Room
 
-def parse(userInput):
+def parse(user_input):
 
     """Parses raw user input and calls proper method in entity or room.
     Args:
         userInput (str): the raw user input"""
 
-    cleanText = cleanInput(userInput)
+    user_input_arts = clean_input(user_input)
+    user_input = remove_arcticles(user_input_arts)
+    
+    verb = find_verb(user_input)
 
-    if Game.DEBUG:
-        Game.log("Parser received phrase: " + userInput + ", and cleaned it to: " + cleanText)
+    print(verb)
 
-def requiresObject(verb, objectType):
+    if verb:
+
+        needs_direct = requires_object(verb, "direct")
+
+def requires_object(verb, object_type):
 
     """Determines if a certain verb needs a direct or indirect object
     Args:
         verb (str): the verb in question
         objectType (str): either 'direct' or 'indirect'"""
     
-    requisiteObjectList = {
+    requires_object_list = {
         "n": (False, False),
         "s": (False, False),
         "e": (False, False),
@@ -53,18 +59,18 @@ def requiresObject(verb, objectType):
 
     requires = False
 
-    if objectType == "direct":
+    if object_type == "direct":
 
-        requires = requisiteObjectList[verb][0]
+        requires = requires_object_list[verb][0]
 
-    elif objectType == "indirect":
+    elif object_type == "indirect":
 
-        requires = requisiteObjectList[verb][1]
+        requires = requires_object_list[verb][1]
     
     return requires
 
     
-def findVerb(text):
+def find_verb(text):
 
     """Finds the verb or verbs in a string of text.
     Args:
@@ -92,7 +98,7 @@ def findVerb(text):
         ["close"],
         ["read"],
         ["drop", "put down"],
-        ["put"],
+        ["put", "put in"],
         ["lock"],
         ["unlock"],
         ["say", "speak", "talk"],
@@ -105,12 +111,12 @@ def findVerb(text):
     ]
 
     verb = ""
-    verbCount = 0
-    wordList = text.split(" ")
+    verb_count = 0
+    word_list = text.split(" ")
 
     if text == "i":
         verb = "inventory"
-        verbCount += 1
+        verb_count += 1
     
     else:
 
@@ -118,44 +124,44 @@ def findVerb(text):
 
             for j in range(len(verbs[i])):
 
-                for a in range(len(wordList)):
+                for a in range(len(word_list)):
 
-                    length = len(wordList)
+                    length = len(word_list)
 
-                    if wordList[a] == verbs[i][j]:
+                    if word_list[a] == verbs[i][j]:
 
-                        if (wordList[a] == "down" or wordList[a] == "up") and a != 0:
+                        if (word_list[a] == "down" or word_list[a] == "up") and a != 0:
 
-                            if wordList[a-1] != "pick" and wordList[a-1] != "put":
+                            if word_list[a-1] != "pick" and word_list[a-1] != "put":
 
                                 verb = verbs[i][j]
-                                verbCount += 1
+                                verb_count += 1
 
-                        elif wordList[a] == "put":
+                        elif word_list[a] == "put":
 
-                            if a+1 != len(wordList):
+                            if a+1 != len(word_list):
 
-                                if wordList[a+1] != "down":
+                                if word_list[a+1] != "down":
 
                                     verb = verbs[i][j]
-                                    verbCount += 1
+                                    verb_count += 1
                             
                             else:
 
                                 verb = verbs[i][j]
-                                verbCount += 1
+                                verb_count += 1
                         
                         else:
 
                             verb = verbs[i][j]
-                            verbCount += 1
+                            verb_count += 1
                     
-                    if a+1 != len(wordList):
+                    if a+1 != len(word_list):
 
-                        if wordList[a] + " " + wordList[a+1] == verbs[i][j]:
+                        if word_list[a] + " " + word_list[a+1] == verbs[i][j]:
 
-                            verb = wordList[a] + " " + wordList[a+1]
-                            verbCount += 1
+                            verb = word_list[a] + " " + word_list[a+1]
+                            verb_count += 1
     
     directions = (
             "n",
@@ -182,9 +188,9 @@ def findVerb(text):
 
     for i in range(len(directions)):
 
-        if verb == directions[i] and verbCount == 2:
+        if verb == directions[i] and verb_count == 2:
 
-            verbCount = 1
+            verb_count = 1
 
     if verb == "move" or verb == "go":
 
@@ -212,7 +218,7 @@ def findVerb(text):
             print("That's not a direction you can go!")
             return ""
             
-    if verbCount == 1:
+    if verb_count == 1:
 
         for i in range(len(verbs)):
 
@@ -224,12 +230,12 @@ def findVerb(text):
         
         return verb
 
-    elif verbCount == 0:
+    elif verb_count == 0:
 
         print("There's no verb in that sentence!")
         return ""
     
-    elif verbCount > 1:
+    elif verb_count > 1:
 
         print("I don't understand that sentence!")
         return ""
@@ -248,7 +254,7 @@ def execute(verb, direct, indirect="", str_indirect=False):
     print(output)
 
 
-def removeArticles(userInput):
+def remove_arcticles(user_input):
 
     """Removes common articles from a string
     Args:
@@ -256,16 +262,16 @@ def removeArticles(userInput):
     Returns:
         str: the string without the articles"""
 
-    articleBlacklist = ("a", "an", "the", "this", "that")
+    article_blacklist = ("a", "an", "the", "this", "that")
 
-    for i in range(len(articleBlacklist)):
+    for i in range(len(article_blacklist)):
 
-        userInput = userInput.replace(articleBlacklist[i]+" ", "")
-        userInput = userInput.replace(" "+articleBlacklist[i], "")
+        user_input = user_input.replace(article_blacklist[i]+" ", "")
+        user_input = user_input.replace(" "+article_blacklist[i], "")
     
-    return userInput
+    return user_input
 
-def cleanInput(userInput):
+def clean_input(user_input):
 
     """Removes puctuation and caps from string
     Args:
@@ -273,15 +279,15 @@ def cleanInput(userInput):
     Returns:
         str: string without puctuation or caps"""
     
-    puncBlacklist = (".", ",", "<", ">", "?", "/", "\\", ";", ":", "'", "[", "]", "{", "}", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "=", "`", "~")
+    punc_blacklist = (".", ",", "<", ">", "?", "/", "\\", ";", ":", "'", "[", "]", "{", "}", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "=", "`", "~")
 
-    for i in range(len(puncBlacklist)):
+    for i in range(len(punc_blacklist)):
 
-        userInput = userInput.replace(puncBlacklist[i], "")
+        user_input = user_input.replace(punc_blacklist[i], "")
 
-    userInput = userInput.lower()
+    user_input = user_input.lower()
 
-    return userInput
+    return user_input
 
 def move(direction):
     Game.game.player.move(direction)
