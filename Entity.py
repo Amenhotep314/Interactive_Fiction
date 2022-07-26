@@ -11,7 +11,7 @@ class Entity:
         size=1, strength=0, capacity=0,
         hoistable=True, destroyable=False, open=False, openable=False, lightable=False, on=False,
         unlocks=None):
-        
+
         """
         Args:
             name (str): The primary title of the game entity
@@ -45,14 +45,14 @@ class Entity:
 
         if Game.DEBUG:
             Game.log("Entity initialized. Name: {name}.\tLocation: {location}".format(name=str(self), location=str(self.location)))
-    
-    
+
+
     def __str__(self):
 
         """Overloads the builtin string method.
         Returns:
             str: The primary name of the entity"""
-        
+
         return self.names[0].lower()
 
 
@@ -69,12 +69,12 @@ class Entity:
 
         """Overloads the builtin comparison method.
         Args:
-            other: Another object 
+            other: Another object
         Returns:
             bool: Are the representations equal?"""
 
         return self.__hash__() == other.__hash__()
-    
+
 
     def __hash__(self):
 
@@ -169,7 +169,7 @@ class Entity:
 
         """Puts the entity in the target location if possible.
         Args:
-            other (Entity): The object which the entity will be put into    
+            other (Entity): The object which the entity will be put into
         Returns:
             str: Success/failure message"""
 
@@ -218,7 +218,7 @@ class Entity:
 
         """Allows the entity to be opened if possible.
         Args:
-            unlocker (Entity): The item being used to unlock this entity    
+            unlocker (Entity): The item being used to unlock this entity
         Returns:
             str: Success/failure message"""
 
@@ -230,12 +230,12 @@ class Entity:
         else:
             return "You cannot unlock the {name} with the {other_name}.".format(name=str(self), other_name=str(unlocker))
 
-    
+
     def lock(self, locker):
 
         """Prevents the entity from being opened if possible.
         Args:
-            locker (Entity): The item being used to lock this entity     
+            locker (Entity): The item being used to lock this entity
         Returns:
             str: Success/failure message"""
 
@@ -281,7 +281,7 @@ class Entity:
 
         """Handles this entity being hit with another entity.
         Args:
-            indirect_object (Entity): The entity being used to hit this one 
+            indirect_object (Entity): The entity being used to hit this one
         Returns:
             str: Success/failure message"""
 
@@ -300,7 +300,7 @@ class Entity:
 
         """Handles this entity being spoken to.
         Args:
-            text (str): The words said to the entity    
+            text (str): The words said to the entity
         Returns:
             str: The entity's response or a failure message"""
 
@@ -322,24 +322,25 @@ class Entity:
 
         return ""
 
+
     def look(self):
-        
+
         """Returns the description and contents of the location of the entity
         Returns:
             str: description of the location and a list of its contents"""
-        
-        name = self.location.__str__()
+
+        name = str(self.location)
         description = self.location.examine()
-        contents = self.location.contents()
+        room_contents = self.location.contents()
 
         description = name + "\n" + description
 
-        if len(contents) != 0:
+        if room_contents:
 
-            description += "\nHere you see:\n"
+            description += "\nHere you see:"
 
-            for item in contents:
+            for item in room_contents:
 
-                description += item + "\n"
-        
+                description += "\n" + item
+
         return description
