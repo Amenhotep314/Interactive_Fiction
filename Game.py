@@ -1,14 +1,24 @@
-import House
+# import House
+
+import os
+import pickle
+from tkinter import filedialog
+from Parser import parse
 
 
 DEBUG = True
+# NOTE: Reference the current game state as Game.game, or use from Game import game. Do not use
+# Game.Game, which points to the class and not the instance. This global is reassigned by main and
+# load.
+game = None
+
 
 class Game:
 
     """A class to represent the state of the game."""
 
     def __init__(self):
-        
+
         self.turn = 0
         self.score = 0
         self.player = House.get_player()
@@ -16,10 +26,8 @@ class Game:
         self.rooms = House.get_rooms()
         self.score_events = House.get_score_events()
 
-        for key in self.rooms:
-            self.rooms[key].snap()
-        for key in self.entities:
-            self.entities[key].snap()
+        for room in self.rooms: room.snap()
+        for entity in self.entities: entity.snap()
 
 
     def prioritize_entities(self):
@@ -27,7 +35,7 @@ class Game:
         """Sorts the entities based on the current situation, prioritizing items in the inventory
         and current room."""
 
-        ans = ()
+        ans = []
         for entity in self.entities:
             if entity.location == self.player:
                 ans.append(entity)
@@ -39,61 +47,82 @@ class Game:
         for entity in self.entities:
             ans.append(entity)
             self.entities.remove(entity)
-        
+
         self.entities = ans
 
 
-    def object_from_str(self, name, require_entity=False):
+    def object_from_str(self, name, inc_entities=True, inc_rooms=False):
 
         """Tries to find the object to which a given string refers.
         Args:
             name (str): The name of the target object
-            require_entity (bool): Should the function search exclusively for an Entity, not a Room? (default is False)
+            inc_entities (bool): Should the function search entities? (default is True)
+            inc_rooms (bool): Should the function search rooms? (default is False)
         Returns:
             Entity or Room or None: The object most likely refered to by the given string, or None if this fails"""
 
         name = name.lower()
+        self.prioritize_entities()
 
-        for key in self.entities:
-            if name == key.lower():
-                return self.entities[key]
-        for key in self.entities:
-            if name in (other_name.lower() for other_name in self.entities[key].names):
-                return self.entities[key]   
-        if name in (other_name.lower() for other_name in self.player.names):
-            return self.player
-        
-        if require_entity:
-            return None
+        if inc_entities:
+            for entity in self.entities:
+                if entity.names[0] == name:
+                    return entity
+            for entity in self.entities:
+                for i in range(1, len(entity.names)):
+                    if entity.names[i] == name:
+                        return entity
 
-        for key in self.rooms:
-            if name == self.rooms[key].lower():
-                return self.rooms[key]
-        
-        return None   
-        
+        if inc_rooms:
+            for room in self.rooms:
+                if room.id == name:
+                    return room
+            for room in self.rooms:
+                if room.name == name:
+                    return room
+
+        return None
+
+
+    def turn_handler(self, increment=0):
+
+        """Changes and/or accesses the number of the current turn.
+        Args:
+            increment (int): The amount by which to change the turn (default is 0)
+        Returns:
+            int: The current turn"""
+
+        self.turn += increment
+        return self.turn
+
+
+    def do_turn(self):
+
+        """Runs all background tasks for a turn."""
+
+        for entity in self.entities: entity.per_turn()
+        for room in self.rooms: room.per_turn()
 
 
 def main():
 
     """Executed from the command line and calls all other parts of the game."""
 
-    game = Game()
-    
     if DEBUG:
         log("Session started.")
-    
-    # Import all entities and rooms
-    # Snap all entities and rooms
 
-    # Start tests
-    from Entity import Entity
-    from Room import Room
+    global game
+    game = Game()
 
-    west_of_house = Room(
-        "West of House",
-        "You are standing in an open field west of a white house, with a boarded front door.",
-    )
+    while True:
+        game.turn_handler(1)
+        print("Turn: " + str(game.turn) + "\tScore" + str(game.score))
+        print(game.player.look())
+        user_input = input(">>> ")
+        parse(user_input)
+        game.do_turn()
+        break
+
 
 def save():
 
@@ -115,19 +144,19 @@ def load():
 
 
 def log(event):
-    
+
     """Writes the given event to log.txt, along with the date, time, and turn.
     Args:
         event (str): The text to be logged"""
 
     from datetime import datetime
     time = datetime.now()
-    time = time.strftime("%Y/%m/%d - %H:%M:%S - Turn " + str(turn))
+    time = time.strftime("%Y/%m/%d - %H:%M:%S - Turn " + str(game.turn_handler()))
 
     with open("log.txt", "a") as log:
         log.write(time + ": " + str(event) + "\n")
 
 
 if __name__ == "__main__":
-    
+
     main()

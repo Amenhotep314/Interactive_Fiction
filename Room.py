@@ -6,7 +6,7 @@ class Room:
     """A superclass implemented by all rooms in the game."""
 
     def __init__(self,
-        name, description,
+        name, description, id="",
         n=(None,None), e=(None,None), s=(None,None), w=(None,None), ne=(None,None), se=(None,None), sw=(None,None), nw=(None,None), u=(None,None), d=(None,None),
         light=True):
 
@@ -14,16 +14,17 @@ class Room:
         Args:
             name (str): The room's title
             description (str): A description of the room
-            n (tuple, (str, str)): The name of the room to the north of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            e (tuple, (str, str)): The name of the room to the east of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            s (tuple, (str, str)): The name of the room to the south of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            w (tuple, (str, str)): The name of the room to the west of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            ne (tuple, (str, str)): The name of the room to the northeast of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            se (tuple, (str, str)): The name of the room to the southeast of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            sw (tuple, (str, str)): The name of the room to the southwest of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            nw (tuple, (str, str)): The name of the room to the northwest of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            u (tuple, (str, str)): The name of the room above this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
-            d (tuple, (str, str)): The name of the room below this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            id (str): The room's unique identifier, if there will be multiple rooms of the same name. Otherwise set to self.name at initialization (default is "")
+            n (tuple(str, str)): The name of the room to the north of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            e (tuple(str, str)): The name of the room to the east of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            s (tuple(str, str)): The name of the room to the south of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            w (tuple(str, str)): The name of the room to the west of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            ne (tuple(str, str)): The name of the room to the northeast of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            se (tuple(str, str)): The name of the room to the southeast of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            sw (tuple(str, str)): The name of the room to the southwest of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            nw (tuple(str, str)): The name of the room to the northwest of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            u (tuple(str, str)): The name of the room above this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
+            d (tuple(str, str)): The name of the room below this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
             light (bool): Is there enough light to see without a lamp? (default is True)"""
 
         self.name = name
@@ -41,6 +42,8 @@ class Room:
         self.directions["d"] = d if d[0] else None
         self.light = light
 
+        self.id = name if not id else id
+
         if Game.DEBUG:
             Game.log("Room initialized. Name: {name}.".format(name=self.name))
 
@@ -53,7 +56,7 @@ class Room:
 
         return self.name
 
-    
+
     def __repr__(self):
 
         """Overloads the default representation method.
@@ -62,7 +65,7 @@ class Room:
 
         return str(self).lower()
 
-    
+
     def __eq__(self, other):
 
         """Overloads the default comparison method.
@@ -145,4 +148,3 @@ class Room:
             return "Your path is blocked by the {door_name}".format(door_name=str(direction_data[1]))
         else:
             return direction_data[0]
-            
