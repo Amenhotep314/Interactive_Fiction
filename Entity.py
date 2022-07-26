@@ -1,5 +1,4 @@
-import Game
-from Room import Room
+from Game import game, DEBUG, log
 
 
 class Entity:
@@ -15,7 +14,7 @@ class Entity:
         """
         Args:
             name (str): The primary title of the game entity
-            other_names (tuple, str): Additional ways the entity may be referenced
+            other_names ([str]): Additional ways the entity may be referenced
             description (str): The detailed description of the entity
             location (str): The name of another game object which contains this entity. Converted from str to object after initialization by snap
             size (int): The amount of space taken up by the entity (default is 1)
@@ -27,9 +26,9 @@ class Entity:
             openable (bool): Can the entity be opened/closed? Is it unlocked? (default is False)
             lightable (bool): Can the entity be used as a light? (default is False)
             on (bool): Is the entity on? (default is False)
-            unlocks (tuple, str): The names of all entities which this entity can unlock. Converted from str to object after initialization by snap (default is None)"""
+            unlocks ([str]): The names of all entities which this entity can unlock. Converted from str to object after initialization by snap (default is None)"""
 
-        self.names = (name,) + other_names
+        self.names = [name].append(other_names)
         self.description = description
         self.location = location
         self.size = size
@@ -43,8 +42,8 @@ class Entity:
         self.on = on
         self.unlocks = unlocks
 
-        if Game.DEBUG:
-            Game.log("Entity initialized. Name: {name}.\tLocation: {location}".format(name=str(self), location=str(self.location)))
+        if DEBUG:
+            log("Entity initialized. Name: {name}.\tLocation: {location}".format(name=str(self), location=str(self.location)))
 
 
     def __str__(self):
@@ -90,22 +89,22 @@ class Entity:
         """Converts strings to object references when possible. Should be called on all entities at session start."""
 
         if type(self.location) == str:
-            self.location = Game.object_from_str(self.location)
+            self.location = game.object_from_str(self.location, inc_rooms=True)
         if self.unlocks and type(self.unlocks[0]) == str:
-            self.unlocks = (Game.object_from_str(entity) for entity in self.unlocks)
+            self.unlocks = (game.object_from_str(entity) for entity in self.unlocks)
 
 
     def contents(self):
 
         """Identifies entities which consider this entity their container.
         Returns:
-            tuple, Entity: All entities which this entity contains"""
+            [Entity]: All entities which this entity contains"""
 
-        ans = ()
+        ans = []
 
-        for item in Game.entities:
+        for item in game.entities:
             if item.location == self:
-                ans = ans + (item,)
+                ans.append(item)
 
         return ans
 
@@ -127,8 +126,8 @@ class Entity:
 
         """Should be called every turn on every entity. Logs state of object and may be overloaded for custom behavior."""
 
-        if Game.DEBUG:
-            Game.log("Game state update. Location of {name} is {location}".format(name=str(self), location=self.location))
+        if DEBUG:
+            log("Game state update. Location of {name} is {location}".format(name=str(self), location=self.location))
 
 
     def examine(self):
@@ -148,8 +147,8 @@ class Entity:
 
         if not self.hoistable:
             return "You cannot pick up the {name}.".format(name=str(self))
-        elif Game.player.contents_size() + self.size <= Game.player.capacity:
-            self.location = Game.player
+        elif game.player.contents_size() + self.size <= game.player.capacity:
+            self.location = game.player
             return "Taken."
         else:
             return "Your load is too heavy to pick up the {name}.".format(name=str(self))
@@ -161,11 +160,11 @@ class Entity:
         Returns:
             str: Success message"""
 
-        self.location = Game.player.location
+        self.location = game.player.location
         return "Dropped."
 
 
-    def put_in(self, other):
+    def put(self, other):
 
         """Puts the entity in the target location if possible.
         Args:
