@@ -95,44 +95,23 @@ def main():
         "You are standing in an open field west of a white house, with a boarded front door.",
     )
 
-    mailbox = Entity(
-        "Small Mailbox", ("mailbox", "box",),
-        "",
-        west_of_house,
-        capacity=1,
-        hoistable=False, openable=True,
-    )
+def save():
 
-    leaflet = Entity(
-        "Leaflet",
-        (),
-        "The leaflet says, \"WELCOME TO ZORK!\n\nZORK is a game of adventure, danger, and low cunning. In it you will explore some of the most amazing territory ever seen by mortals. No computer should be without one!\"",
-        mailbox,
-    )
-
-    # End tests
-
-    while True:
-        turn_handler(1)
-        # Background tasks
-        # Display update
-        # User input
-        # Parse
-        # Turn tasks
-        break
+    """Serializes the current game state to a file."""
+    dir = os.getcwd()
+    with filedialog.asksaveasfile(mode='wb', initialdir=dir, filetypes=[("Pickle files", "*.p")], defaultextension=".p") as file:
+        pickle.dump(game, file)
 
 
-def turn_handler(increment=0):
-    
-    """Changes and/or accesses the number of the current turn.
-    Args:
-        increment (int): The amount by which to change the turn (default is 0)
-    Returns:
-        int: The current turn"""
-    
-    global turn
-    turn += increment
-    return turn
+def load():
+
+    """Sets the current game state to the contents of a file."""
+    dir = os.getcwd()
+    with filedialog.askopenfile(mode='rb', initialdir=dir, filetypes=[("Pickle files", "*.p")]) as file:
+        new_game = pickle.load(file)
+
+    global game
+    game = new_game
 
 
 def log(event):
