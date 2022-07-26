@@ -73,7 +73,16 @@ class Entity:
         Returns:
             bool: Are the representations equal?"""
 
-        return self.__repr__() == other.__repr__()
+        return self.__hash__() == other.__hash__()
+    
+
+    def __hash__(self):
+
+        """Overloads the builtin hash method.
+        Returns:
+            str: The hash code that represents the entity."""
+
+        return hash(self.__repr__())
 
 
     def snap(self):
