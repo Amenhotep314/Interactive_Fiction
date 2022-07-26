@@ -233,7 +233,20 @@ def findVerb(text):
 
         print("I don't understand that sentence!")
         return ""
-        
+
+
+def execute(verb, direct, indirect="", str_indirect=False):
+    
+    direct_object = Game.ObjectFromStr(direct)
+
+    if indirect and not str_indirect:
+
+        indirect_object = Game.ObjectFromStr(indirect)
+
+    method = getattr(direct_object, verb)
+    output = method(indirect_object)
+    print(output)
+
 
 def removeArticles(userInput):
 
