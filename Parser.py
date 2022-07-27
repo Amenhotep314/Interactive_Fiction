@@ -292,6 +292,22 @@ def check_unknown_words(text):
         "drink", "guzzle", "sip", "swallow", "swig", "slurp"
     ]
 
+    for word in word_list:
+
+        if word not in verbs and not Game.object_from_str(word):
+
+            unknown_word = word
+            break
+    
+    return unknown_word
+
+
+def find_direct_object(text, verb):
+
+    word_list = text.split(" ")
+
+    direct_object = ""
+
     for i in range(len(word_list)):
 
         if word_list[i] in verbs:
