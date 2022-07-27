@@ -89,9 +89,9 @@ class Entity:
         """Converts strings to object references when possible. Should be called on all entities at session start."""
 
         if type(self.location) == str:
-            self.location = game.object_from_str(self.location, inc_rooms=True)
+            self.location = game.object_from_str(self.location, inc_rooms=True, inc_player=True, is_snap=True)
         if self.unlocks and type(self.unlocks[0]) == str:
-            self.unlocks = (game.object_from_str(entity) for entity in self.unlocks)
+            self.unlocks = (game.object_from_str(entity, is_snap=True) for entity in self.unlocks)
 
 
     def contents(self):

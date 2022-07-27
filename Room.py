@@ -1,4 +1,4 @@
-import Game
+from Game import game, DEBUG, log
 
 
 class Room:
@@ -44,8 +44,8 @@ class Room:
 
         self.id = name if not id else id
 
-        if Game.DEBUG:
-            Game.log("Room initialized. Name: {name}.".format(name=self.name))
+        if DEBUG:
+            log("Room initialized. Name: {name}.".format(name=self.name))
 
 
     def __str__(self):
@@ -63,7 +63,7 @@ class Room:
         Returns:
             str: The identifier of the room for internal use"""
 
-        return str(self).lower()
+        return self.id.lower()
 
 
     def __eq__(self, other):
@@ -81,10 +81,15 @@ class Room:
 
         """Converts strings to object references when possible. Should be called on all entities at session start."""
 
+        new_room = None
+        new_door = None
+
         for key in self.directions:
-            new_room = Game.object_from_str(self.directions[key][0]) if self.directions[key] and type(self.directions[key][0]) == str else None
+            if self.directions[key] and type(self.directions[key][0]) == str:
+                new_room = game.object_from_str(self.directions[key][0], inc_entities=False, inc_rooms=True, is_snap=True)
             if new_room:
-                new_door = Game.object_from_str(self.directions[key][1]) if self.directions[key][1] and type(self.directions[key][1]) == str else None
+                if self.directions[key][1] and type(self.directions[key][1]) == str:
+                    new_door = game.object_from_str(self.directions[key][1], is_snap=True)
                 self.directions[key] = (new_room, new_door)
 
 
@@ -96,7 +101,7 @@ class Room:
 
         ans = ()
 
-        for item in Game.entities:
+        for item in game.entities:
             if item.location == self:
                 ans = ans + (item,)
 
