@@ -258,7 +258,6 @@ def check_unknown_words(text):
 
     word_list = text.split(" ")
     unknown_word = ""
-    known_list = [False for x in word_list]
 
     verbs = [
         "move", "go",
