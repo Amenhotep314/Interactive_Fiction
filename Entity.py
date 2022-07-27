@@ -322,26 +322,3 @@ class Entity:
         self.location = ans
 
         return ""
-
-
-    def look(self):
-
-        """Returns the description and contents of the location of the entity
-        Returns:
-            str: description of the location and a list of its contents"""
-
-        name = str(self.location)
-        description = self.location.examine()
-        room_contents = self.location.contents()
-
-        description = name + "\n" + description
-
-        if room_contents:
-
-            description += "\nHere you see:"
-
-            for item in room_contents:
-
-                description += "\n" + item
-
-        return description
