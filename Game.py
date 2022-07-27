@@ -51,26 +51,29 @@ class Game:
         self.entities = ans
 
 
-    def object_from_str(self, name, inc_entities=True, inc_rooms=False):
+    def object_from_str(self, name, inc_entities=True, inc_rooms=False, inc_player=False, is_snap=False):
 
         """Tries to find the object to which a given string refers.
         Args:
             name (str): The name of the target object
             inc_entities (bool): Should the function search entities? (default is True)
             inc_rooms (bool): Should the function search rooms? (default is False)
+            inc_player (bool): Should the function check the player? (default is False)
+            is_snap (bool): Is this function being called by a snap() function? If so, don't bother with prioritize_entities() (default is False)
         Returns:
             Entity or Room or None: The object most likely refered to by the given string, or None if this fails"""
 
         name = name.lower()
-        self.prioritize_entities()
+        if not is_snap:
+            self.prioritize_entities()
 
         if inc_entities:
             for entity in self.entities:
-                if entity.names[0] == name:
+                if entity.names[0].lower() == name:
                     return entity
             for entity in self.entities:
                 for i in range(1, len(entity.names)):
-                    if entity.names[i] == name:
+                    if entity.names[i].lower() == name:
                         return entity
 
         if inc_rooms:
@@ -80,6 +83,11 @@ class Game:
             for room in self.rooms:
                 if room.name == name:
                     return room
+
+        if inc_player:
+            for player_name in self.player.names:
+                if player_name.lower() == name:
+                    return self.player
 
         return None
 
