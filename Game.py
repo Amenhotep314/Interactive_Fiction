@@ -102,6 +102,7 @@ class Game:
 
         for entity in self.entities: entity.per_turn()
         for room in self.rooms: room.per_turn()
+        if self.player.strength <=0: self.player.die()
 
 
 def main():

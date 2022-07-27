@@ -180,7 +180,7 @@ class Entity:
             self.location = other
             return "The {name} is now in the {other_name}.".format(name=str(self), other_name=str(other))
         else:
-            return "There is not enough room in the {other_name} for the {name}".format(other_name=str(other), name=str(self))
+            return "There is not enough room in the {other_name} for the {name}.".format(other_name=str(other), name=str(self))
 
 
     def open(self):
@@ -192,7 +192,7 @@ class Entity:
         if self.open:
             return "The {name} is already open.".format(name=str(self))
         elif not self.openable:
-            return "You cannot open the {name}".format(name=str(self))
+            return "You cannot open the {name}.".format(name=str(self))
         else:
             self.open = True
             return "Opened."
@@ -242,9 +242,9 @@ class Entity:
             return "The {name} is already unopenable.".format(name=str(self))
         elif self in locker.unlocks:
             self.openable = False
-            return "You lock the {name}".format(name=str(self))
+            return "You lock the {name}.".format(name=str(self))
         else:
-            return "You cannot lock the {name} with the {other_name}".format(name=str(self), other_name=str(locker))
+            return "You cannot lock the {name} with the {other_name}.".format(name=str(self), other_name=str(locker))
 
 
     def turn_on(self):
@@ -254,7 +254,7 @@ class Entity:
             str: Successs/failure message"""
 
         if self.on:
-            return "The {name} is already open.".format(name=str(self))
+            return "The {name} is already on.".format(name=str(self))
         elif not self.lightable:
             return "The {name} cannot be turned on.".format(name=str(self))
         else:
@@ -292,7 +292,7 @@ class Entity:
                 self.location = None
                 return "With a swift blow from the {other_name}, the {name} is destroyed.".format(other_name=str(indirect_object), name=str(self))
             else:
-                return "You damage the {other_name}.".format(other_name=str(indirect_object))
+                return "You damage the {name}.".format(name=str(self))
 
 
     def say(self, text):
@@ -310,9 +310,11 @@ class Entity:
 
         """Moves this entity through an exit if possible.
         Args:
-            direction (str): n, e, s, w, ne, se, sw, nw, u, or d
+            direction (str): n, e, s, w, ne, se, sw, nw, u, d, in, or out
         Returns:
             str: Failure message or empty string for success"""
+
+        assert direction in ["n", "e", "s", "w", "ne", "se", "sw", "nw", "u", "d", "in", "out"]
 
         ans = self.location.move(self, direction)
         if type(ans) == str:
