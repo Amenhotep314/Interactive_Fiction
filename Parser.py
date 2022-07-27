@@ -254,6 +254,61 @@ def execute(verb, direct, indirect="", str_indirect=False):
     print(output)
 
 
+def check_unknown_words(text):
+
+    word_list = text.split(" ")
+    unknown_word = ""
+    known_list = [False for x in word_list]
+
+    verbs = [
+        "move", "go",
+        "n", "north",
+        "s", "south",
+        "e", "east",
+        "w", "west",
+        "nw", "northwest",
+        "ne", "northeast",
+        "sw", "southwest",
+        "se", "southeast",
+        "u", "up",
+        "d", "down",
+        "look", "location", "l",
+        "inventory",
+        "take", "get", "pick up", "grab", "steal", "hoist",
+        "throw", "chuck", "hurl", "pitch",
+        "open",
+        "close",
+        "read",
+        "drop", "put down",
+        "put", "put in",
+        "lock",
+        "unlock",
+        "say", "speak", "talk",
+        "turn on", "activate", "switch on",
+        "turn off", "deactivate", "swith off",
+        "hit", "kill", "attack", "strike", "smite", "slash", "destroy", "chop", "slice", "punch", "slap", "kick", "assault", "smack", "break",
+        "examine", "search", "inspect",
+        "eat", "consume", "devour", "gobble", "munch", "gnaw on",
+        "drink", "guzzle", "sip", "swallow", "swig", "slurp"
+    ]
+
+    for i in range(len(word_list)):
+
+        if word_list[i] in verbs:
+
+            known_list[i] = True
+        
+        elif Game.object_from_str(word_list[i]):
+
+            known_list[i] = True
+
+        else:
+
+            unknown_word = word_list[i]
+            break
+    
+    return unknown_word
+
 def remove_arcticles(user_input):
 
     """Removes common articles from a string
