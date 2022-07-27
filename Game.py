@@ -1,9 +1,9 @@
-import House as Source
-
 import os
 import pickle
 from tkinter import filedialog
 from Parser import parse
+
+import House as Source
 
 
 DEBUG = True
@@ -134,11 +134,11 @@ def main():
 
     """Executed from the command line and calls all other parts of the game."""
 
-    if DEBUG:
-        log("Session started.")
-
     global game
     game = Game()
+
+    if DEBUG:
+        log("Session started.")
 
     while True:
         print("Turn: " + str(game.turn) + "\tScore" + str(game.score))

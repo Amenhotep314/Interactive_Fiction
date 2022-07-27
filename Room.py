@@ -14,7 +14,7 @@ class Room:
         Args:
             name (str): The room's title
             description (str): A description of the room
-            id (str): The room's unique identifier, if there will be multiple rooms of the same name. Otherwise set to self.name at initialization (default is "")
+            id (str): The room's unique identifier, if there will be multiple rooms of the same name. Otherwise set to self.name.lower() at initialization (default is "")
             n (tuple(str, str)): The name of the room to the north of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
             e (tuple(str, str)): The name of the room to the east of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
             s (tuple(str, str)): The name of the room to the south of this one and the name of the door in between. Converted to objects after initialization by snap (default is (None, None))
@@ -42,7 +42,7 @@ class Room:
         self.directions["d"] = d if d[0] else None
         self.light = light
 
-        self.id = name if not id else id
+        self.id = name.lower() if not id else id
 
         if DEBUG:
             log("Room initialized. Name: {name}.".format(name=self.name))
@@ -63,7 +63,7 @@ class Room:
         Returns:
             str: The identifier of the room for internal use"""
 
-        return self.id.lower()
+        return self.id
 
 
     def __eq__(self, other):
