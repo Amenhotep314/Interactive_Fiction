@@ -19,7 +19,7 @@ class Game:
 
     def __init__(self):
 
-        self.turn = 0
+        self.turn = 1
         self.score = 0
         self.player = Source.get_player()
         self.entities = Source.get_entities()
@@ -104,13 +104,30 @@ class Game:
         return self.turn
 
 
+    def score_handler(self):
+
+        """Checks for changes in score.
+        Returns:
+            int: The current score"""
+
+        for event in self.score_events:
+            if getattr(event[0], event[1]) == event[2]:
+                self.score += event[3]
+                self.score_events.remove(event)
+
+        return self.score
+
+
     def do_turn(self):
 
         """Runs all background tasks for a turn."""
 
+        self.score_handler()
+        if self.player.strength <=0: self.player.die()
+        self.player.per_turn()
         for entity in self.entities: entity.per_turn()
         for room in self.rooms: room.per_turn()
-        if self.player.strength <=0: self.player.die()
+        self.turn_handler(1)
 
 
 def main():
@@ -124,13 +141,11 @@ def main():
     game = Game()
 
     while True:
-        game.turn_handler(1)
         print("Turn: " + str(game.turn) + "\tScore" + str(game.score))
         print(game.player.look())
         user_input = input(">>> ")
         parse(user_input)
         game.do_turn()
-        break
 
 
 def save():
