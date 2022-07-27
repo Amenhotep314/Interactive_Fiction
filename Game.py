@@ -1,4 +1,4 @@
-# import House
+import House as Source
 
 import os
 import pickle
@@ -21,10 +21,10 @@ class Game:
 
         self.turn = 0
         self.score = 0
-        self.player = House.get_player()
-        self.entities = House.get_entities()
-        self.rooms = House.get_rooms()
-        self.score_events = House.get_score_events()
+        self.player = Source.get_player()
+        self.entities = Source.get_entities()
+        self.rooms = Source.get_rooms()
+        self.score_events = Source.get_score_events()
 
         for room in self.rooms: room.snap()
         for entity in self.entities: entity.snap()
