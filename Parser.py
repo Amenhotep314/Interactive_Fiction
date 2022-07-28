@@ -243,11 +243,11 @@ def find_verb(text):
 
 def execute(verb, direct, indirect="", str_indirect=False):
     
-    direct_object = Game.ObjectFromStr(direct)
+    direct_object = Game.game.object_from_str(direct)
 
     if indirect and not str_indirect:
 
-        indirect_object = Game.ObjectFromStr(indirect)
+        indirect_object = Game.game.object_from_str(indirect)
 
     method = getattr(direct_object, verb)
     output = method(indirect_object)
