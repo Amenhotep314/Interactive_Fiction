@@ -303,26 +303,109 @@ def check_unknown_words(text):
 
 def find_direct_object(text, verb):
 
-    word_list = text.split(" ")
+    word_list = text.split()
+    verb_words = verb.split()
 
-    direct_object = ""
+    if len(verb_words) > 1:
+
+        for i in range(len(word_list)):
+
+            if word_list[i] == verb_words[0]:
+
+                word_list[i:i+(len(verb_words)-1)] = verb
+                break
+                
+
+    direct_object = []
+
+    verb_index = word_list.index(verb)
+
+    indirect_qualifyers = ("use", "using", "with")
+    qualifyer_index = None
+    qualifyer_count = 0
 
     for i in range(len(word_list)):
 
-        if word_list[i] in verbs:
+        for qualifyer in indirect_qualifyers:
 
-            known_list[i] = True
+            if word_list[i] == qualifyer:
+
+                qualifyer_index = i
+                qualifyer_count += 1
+
+    if qualifyer_count == 1:
+
+        if qualifyer_index < verb_index:
+
+            word_list = word_list[verb_index:]
         
-        elif Game.object_from_str(word_list[i]):
+        elif qualifyer_index > verb_index:
 
-            known_list[i] = True
-
-        else:
-
-            unknown_word = word_list[i]
-            break
+            word_list = word_list[:qualifyer_index]
     
-    return unknown_word
+    if qualifyer_count > 1:
+
+        print("I don't understand that sentence!")
+
+    else:
+
+        verb_index = word_list.index(verb)
+        del word_list[verb_index]
+
+        counted_list = [False for x in word_list]
+
+        for i in range(len(word_list)-1):
+
+            if Game.game.object_from_str(word_list[i] + " " + word_list[i+1]) and not counted_list[i] and not counted_list[i+1]:
+
+                direct_object.append(word_list[i] + " " + word_list[i+1])
+                counted_list[i] = True
+                counted_list[i+1] = True
+
+        for i in range(len(word_list)):
+
+            if Game.game.object_from_str(word_list[i]) and not counted_list[i]:
+
+                direct_object.append(word_list[i])
+                counted_list[i] = True
+        
+        if not direct_object:
+
+            user_input = input("What do you want to " + verb + "?")
+            user_input = clean_input(user_input)
+            user_input = remove_arcticles(user_input)
+            unknown = check_unknown_words(user_input)
+
+            if unknown:
+
+                print("I don't know the word: \"" + unknown +".\"")
+            
+            else:
+
+                input_words = user_input.split()
+                counted_list = [False for x in input_words]
+
+                for i in range(len(input_words)-1):
+
+                    if Game.game.object_from_str(input_words[i] + " " + input_words[i+1]) and not counted_list[i] and not counted_list[i+1]:
+
+                        direct_object.append(input_words[i] + " " + input_words[i+1])
+                        counted_list[i] = True
+                        counted_list[i+1] = True
+
+                for i in range(len(input_words)):
+
+                    if Game.game.object_from_str(input_words[i]) and not counted_list[i]:
+
+                        direct_object.append(input_words[i])
+                        counted_list[i] = True
+                
+                if not direct_object:
+
+                    print("What?")
+    
+    return direct_object
+                
 
 def remove_arcticles(user_input):
 
