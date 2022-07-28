@@ -293,7 +293,7 @@ def check_unknown_words(text):
 
     for word in word_list:
 
-        if word not in verbs and not Game.object_from_str(word):
+        if word not in verbs and not Game.game.object_from_str(word):
 
             unknown_word = word
             break
