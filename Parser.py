@@ -256,8 +256,12 @@ def execute(verb, direct, indirect="", str_indirect=False):
 
 def check_unknown_words(text):
 
+    """This is NOT done yet. Don't even try to test it. It's no good."""
+
     word_list = text.split(" ")
     unknown_word = ""
+
+    white_list = ("and", "to", "all", "use", "using", "with")
 
     verbs = [
         "move", "go",
