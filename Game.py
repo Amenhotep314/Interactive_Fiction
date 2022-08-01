@@ -3,7 +3,7 @@ import pickle
 from tkinter import filedialog
 
 
-DEBUG = True
+DEBUG = False
 # NOTE: Reference the current game state as Game.game, or use from Game import game. Do not use
 # Game.Game, which points to the class and not the instance. This global is reassigned by main and
 # load.
@@ -18,13 +18,19 @@ class Game:
 
         self.turn = 1
         self.score = 0
-        self.player = Source.get_player()
-        self.entities = Source.get_entities()
-        self.rooms = Source.get_rooms()
-        self.score_events = Source.get_score_events()
+        self.player = player
+        self.entities = entities
+        self.rooms = rooms
+        #self.score_events = get_score_events()
+
+
+
+
+    def snap(self):
 
         for room in self.rooms: room.snap()
         for entity in self.entities: entity.snap()
+        player.snap()
 
 
     def prioritize_entities(self):
@@ -48,14 +54,14 @@ class Game:
         self.entities = ans
 
 
-    def object_from_str(self, name, inc_entities=True, inc_rooms=False, inc_player=False, is_snap=False):
+    def object_from_str(self, name, inc_entities=True, inc_rooms=False, inc_player=True, is_snap=False):
 
         """Tries to find the object to which a given string refers.
         Args:
             name (str): The name of the target object
             inc_entities (bool): Should the function search entities? (default is True)
             inc_rooms (bool): Should the function search rooms? (default is False)
-            inc_player (bool): Should the function check the player? (default is False)
+            inc_player (bool): Should the function check the player? (default is True)
             is_snap (bool): Is this function being called by a snap() function? If so, don't bother with prioritize_entities() (default is False)
         Returns:
             Entity or Room or None: The object most likely refered to by the given string, or None if this fails"""
@@ -119,7 +125,7 @@ class Game:
 
         """Runs all background tasks for a turn."""
 
-        self.score_handler()
+        #self.score_handler()
         if self.player.strength <=0: self.player.die()
         self.player.per_turn()
         for entity in self.entities: entity.per_turn()
@@ -154,7 +160,8 @@ class Entity:
             on (bool): Is the entity on? (default is False)
             unlocks ([str]): The names of all entities which this entity can unlock. Converted from str to object after initialization by snap (default is None)"""
 
-        self.names = [name].append(other_names)
+        self.names = name
+        [self.names].append(other_names)
         self.description = description
         self.location = location
         self.size = size
@@ -477,7 +484,7 @@ class Character(Entity):
             on (bool): Is the character on? (default is False)
             unlocks (tuple, str): The names of all entities which this character can unlock. Converted from str to object after initialization by snap (default is None)"""
 
-        super.__init__(self,
+        Entity.__init__(self,
             name, other_names, description, location,
             size=size, strength=strength, capacity=capacity,
             hoistable=hoistable, destroyable=destroyable, open=open, openable=openable, lightable=lightable, on=on,
@@ -727,6 +734,15 @@ class Room:
         return self.__repr__() == other.__repr__()
 
 
+    def __hash__(self):
+
+        """Overloads the default hash method.
+        Returns:
+            str: The hash code that represents the room"""
+
+        return hash(self.__repr__())
+
+
     def snap(self):
 
         """Converts strings to object references when possible. Should be called on all entities at session start."""
@@ -812,12 +828,13 @@ def main():
     global game
     game = Game()
 
+    game.snap()
+
     if DEBUG:
         log("Session started.")
 
     while True:
         print("Turn: " + str(game.turn) + "\tScore" + str(game.score))
-        print(game.player.look())
         user_input = input(">>> ")
         parse(user_input)
         game.do_turn()
@@ -898,7 +915,7 @@ def parse(user_input):
                             execute(verb, direct)
 
             else:
-                execute(verb, "player")
+                execute(verb, ["player"])
 
 
 def supports_multiple_direct_objects(verb):
@@ -1140,15 +1157,22 @@ def find_verb(text):
 
 def execute(verb, direct, indirect="", str_indirect=False):
 
-    direct_object = game.object_from_str(direct)
+    direct_object = [game.object_from_str(item) for item in direct]
 
     if indirect and not str_indirect:
 
         indirect_object = game.object_from_str(indirect)
 
-    method = getattr(direct_object, verb)
-    output = method(indirect_object)
-    print(output)
+    for item in direct_object:
+        method = getattr(item, verb)
+
+        if indirect:
+            output = method(indirect_object)
+
+        else:
+            output = method()
+
+        print(output)
 
 
 def check_unknown_words(text):
@@ -1513,6 +1537,8 @@ class Player(Character):
         Returns:
             str: Description of the location and a list of its contents"""
 
+        print(type(self.location))
+
         name = str(self.location)
         description = self.location.examine()
         room_contents = self.location.contents()
@@ -1520,7 +1546,7 @@ class Player(Character):
         description = name + "\n" + description
 
         if room_contents:
-            description += "\nHere you see:\n" + "\n".join(room_contents)
+            description += "\nHere you see:\n" + "\n".join([str(content) for content in room_contents])
 
         return description
 
@@ -1533,6 +1559,16 @@ class Player(Character):
 
         ans = "You are carrying:\n"
         contents = self.contents()
+
+player = Player()
+
+entities = [
+    Entity("knife", ["nasty knife"], "This is a terrific knife!", "mudroom")
+]
+
+rooms = [
+    Room("Mudroom", "This room is full of shoes.")
+]
 
 if __name__ == "__main__":
 
